@@ -55,6 +55,7 @@ textarea {
   --section-background: #f9f9f9;
   --dark-color: #2f3542;
   --light-color: #f1f2f6;
+  --success-color: #2ed573;
   --warning-color: #ffa502;
   --text-light: #777;
   --white: #fff;
@@ -213,7 +214,7 @@ footer {
   color: var(--white);
   width: 1em;
   height: 1.25em;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   border-radius: 50px;
@@ -430,7 +431,6 @@ footer {
 .about-image,
 .about-text {
   flex: 1 1 25.706rem;
-  /* flex: 1 1 17.81rem; */
 }
 
 .about-image {
