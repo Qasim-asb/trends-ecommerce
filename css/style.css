@@ -279,11 +279,15 @@ footer {
 /* Collection Sections */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(18.75rem, 1fr));
-  gap: 1.8rem;
+  grid-auto-columns: 23rem;
+  grid-auto-flow: column;
+  gap: var(--space-m-l);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
 }
 
 .product-card {
+  scroll-snap-align: start;
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--box-shadow);
@@ -640,5 +644,9 @@ footer {
 
   .nav-links.active {
     transform: translateX(0);
+  }
+
+  .product-grid {
+    grid-auto-columns: 18rem;
   }
 }
