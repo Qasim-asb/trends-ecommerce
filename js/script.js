@@ -1,34 +1,30 @@
+import { mobileMenu } from "./mobileMenu.js";
 import { products } from "./products.js";
+import { addToCart, updateCartCount } from "./addToCart.js";
+import {createProductCard} from "./productCard.js"
 
-const hamburger = document.querySelector(".hamburger");
-const navLinks = document.querySelector(".nav-links");
-const cartCount = document.querySelector(".cart-count");
-const newsletterForm = document.querySelector(".newsletter-form");
-
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 
 document.addEventListener("DOMContentLoaded", () => {
-  hamburger.addEventListener("click", toggleMobileMenu);
 
-  document.querySelectorAll(".nav-links a").forEach(link => {
-    link.addEventListener("click", closeMobileMenu);
+  document.addEventListener("click", (e) => {
+    const target = e.target;
+
+    mobileMenu(target);
+
+    if (target.closest(".wishlist-btn")) {
+      const productId = target.closest(".wishlist-btn").dataset.id;
+      toggleWishlist(productId);
+      updateWishlistButtons();
+    }
   });
 
   renderProducts();
   updateCartCount();
+  updateWishlistButtons();
 
-  newsletterForm.addEventListener("submit", handleNewsletterSubmit);
+  document.querySelector(".newsletter-form").addEventListener("submit", handleNewsletterSubmit);
 });
-
-const toggleMobileMenu = () => {
-  navLinks.classList.toggle("active");
-  hamburger.innerHTML = navLinks.classList.contains("active") ? "<i class='fa-solid fa-xmark'></i>" : "<i class='fa-solid fa-bars'></i>";
-}
-
-const closeMobileMenu = () => {
-  navLinks.classList.remove("active");
-  hamburger.innerHTML = "<i class='fa-solid fa-bars'></i>";
-}
 
 const renderProducts = () => {
   const menSection = document.querySelector(".collection:nth-of-type(2) .product-grid");
@@ -46,98 +42,23 @@ const renderProducts = () => {
   });
 }
 
-const createProductCard = (product) => {
-  const card = document.createElement("div");
-  card.className = "product-card";
-
-  const badgeHTML = product.badge ? `<div class="product-badge ${product.badge === "Sale" ? "sale" : ""}">${product.badge}</div>` : "";
-
-  const originalPriceHTML = product.originalPrice ? `<span class="original-price">$${product.originalPrice.toFixed(2)}</span>` : "";
-
-  const starRating = createStarRating(product.rating);
-
-  card.innerHTML = `
-    ${badgeHTML}
-    <img src="${product.image}" alt="${product.name}" loading="lazy">
-    <div class="product-info">
-      <h3 class="product-title">${product.name}</h3>
-      <div class="product-rating">
-        ${starRating}
-        <span>(${product.reviews})</span>
-      </div>
-      <div class="product-price">
-        <span class="current-price">$${product.price.toFixed(2)}</span>
-        ${originalPriceHTML}
-      </div>
-      <button class="btn add-to-cart" data-id="${product.id}">Add to Cart</button>
-    </div>
-  `;
-
-  return card;
-}
-
-const createStarRating = (rating) => {
-  let stars = "";
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 >= 0.5;
-
-  for (let i = 0; i < fullStars; i++) {
-    stars += '<i class="fa-solid fa-star"></i>';
+const toggleWishlist = (productId) => {
+  const index = wishlist.findIndex(item => item.id === productId);
+  if (index === -1) {
+    const product = products.men.find(p => p.id === productId) || products.women.find(p => p.id === productId);
+    wishlist.push(product);
+  } else {
+    wishlist.splice(index, 1);
   }
+  localStorage.setItem("wishlist", JSON.stringify(wishlist));
+};
 
-  if (hasHalfStar) {
-    stars += '<i class="fa-solid fa-star-half-stroke"></i>';
-  }
-
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-  for (let i = 0; i < emptyStars; i++) {
-    stars += '<i class="fa-regular fa-star"></i>';
-  }
-
-  return stars;
-}
-
-const addToCart = (e) => {
-  const productId = e.target.dataset.id;
-  let product;
-
-  product = products.men.find(p => p.id === productId) || products.women.find(p => p.id === productId);
-
-  if (product) {
-    const existingItem = cart.find(item => item.id === product.id);
-
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      cart.push({
-        ...product,
-        quantity: 1
-      });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    updateCartCount();
-    showAddToCartFeedback(e.target);
-  }
-}
-
-const updateCartCount = () => {
-  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-  cartCount.textContent = totalItems;
-  cartCount.style.display = totalItems > 0 ? "flex" : "none";
-}
-
-const showAddToCartFeedback = (button) => {
-  const originalText = button.textContent;
-  button.textContent = "Added!";
-  button.style.backgroundColor = "var(--success-color)";
-
-  setTimeout(() => {
-    button.textContent = originalText;
-    button.style.backgroundColor = 'var(--dark-color)';
-  }, 1500);
-}
+const updateWishlistButtons = () => {
+  document.querySelectorAll(".wishlist-btn").forEach(btn => {
+    const productId = btn.dataset.id;
+    btn.innerHTML = wishlist.some(item => item.id === productId) ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
+  });
+};
 
 const handleNewsletterSubmit = (e) => {
   e.preventDefault();
