@@ -1,0 +1,30 @@
+.empty-wishlist {
+  min-height: 30vh;
+  display: none;
+  place-items: center;
+}
+
+.empty-wishlist a {
+  padding: 0.6em 1.2em;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.empty-wishlist a:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-0.2em);
+  box-shadow: var(--box-shadow);
+}
+
+.remove-btn {
+  width: 100%;
+  padding-block: 0.6em;
+  background-color: var(--warning-color);
+  margin-top: 1em;
+}
+
+.remove-btn:hover {
+  background-color: var(--primary-color);
+}

@@ -1,4 +1,4 @@
-import { products } from "./products.js";
+import { products } from "../data/products.js";
 
 const cartCount = document.querySelector(".cart-count");
 
@@ -46,4 +46,4 @@ const showAddToCartFeedback = (button) => {
   }, 1500);
 }
 
-export { cart, addToCart, updateCartCount }
+export { addToCart, updateCartCount }

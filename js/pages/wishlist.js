@@ -1,6 +1,6 @@
-import { mobileMenu } from "./mobileMenu.js";
-import { addToCart } from "./addToCart.js";
-import {createProductCard} from "./productCard.js"
+import { mobileMenu } from "../components/mobileMenu.js";
+import { addToCart } from "../components/cart.js";
+import {createProductCard} from "../components/productCard.js"
 
 let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 
